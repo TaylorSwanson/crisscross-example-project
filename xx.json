@@ -1,0 +1,19 @@
+{
+  "projects":[{
+    "name": "ExampleBackend",
+    "executable": "node ./src/backend/index.js",
+    "functions": {
+      "heathcheck": "network",
+      "restart": "network",
+      "shutdown": "network"
+    }
+  }, {
+    "name": "ExampleLoadbalance",
+    "executable": "node ./src/balance/index.js",
+    "functions": {
+      "heathcheck": "network",
+      "restart": "network",
+      "shutdown": "network"
+    }
+  }]
+}
