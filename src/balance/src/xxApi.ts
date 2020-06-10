@@ -1,6 +1,7 @@
 // This file communicates with the CrissCross host server running locally
 
 import http from "http";
+import { EventEmitter } from 'events';
 
 
 // The port must be the same as the crisscross guest port, this is the default
@@ -15,6 +16,8 @@ const cacheTTL = 120; // Time in seconds
 let serverCache: any = [];
 let serverCacheInterval;
 
+const ee = new EventEmitter();
+
 // This will list servers from the cache
 export function listServers(type: string): any {
   type = type.trim().toLowerCase();
@@ -24,10 +27,9 @@ export function listServers(type: string): any {
 };
 
 // Gets called on cache miss, new server, refresh, manual call, etc.
-export function refreshServerCache(type?: string, callback?): void {
-  if (typeof type === "undefined") type = "";
-  
-  // Calls the xxhost local api at internalHost
+export function refreshServerCache(callback?): void {
+  // Calls the xxhost local api at internalHost (localhost by default)
+  const type = "";
   http.get(`http://${internalHost}:${internalPort}/servers/${type}`, (res) => {
     let data = "";
 
@@ -40,11 +42,31 @@ export function refreshServerCache(type?: string, callback?): void {
         data = JSON.parse(data);
       } catch (err) {
         // This could indicate a problem with the xxhost response
-        throw err;
+        return ee.emit("error", err);
       }
 
       // Response will be an array of servers with type, hostname, and ip addresses
-      // TODO check validity
+      //@ts-ignore
+      if (!(data instanceof Array)) {
+        return ee.emit("err", new Error(`Expected an array of servers, received: ${data}`));
+      }
+
+      // Find any new servers in data that are not in serverCache
+      const serversAdded = data.filter(s => {
+        const name = s.name.toLowerCase().trim();
+
+        // Check if this name is in the cache already
+        return -1 === serverCache.findIndex(sc => sc.name.toLowerCase().trim() === name);
+      });
+
+      if (serversAdded.length) {
+        ee.emit("serversadded", serversAdded);
+      }
+
+      const serversChanged = (data.length !== serverCache.length) || serversAdded.length;
+      if (serversChanged) {
+        ee.emit("serverchange", data);
+      }
       serverCache = data;
       
       if (typeof callback === "function") callback(null, serverCache);
@@ -83,13 +105,15 @@ export function reportServerIssue(address: string, callback?): void {
 };
 
 // Start the server, callback on ready to use
-export function start(readyCallback): void {
-  refreshServerCache("", readyCallback);
+export function start(readyCallback): EventEmitter {
+  refreshServerCache(readyCallback);
 
   // Start refresh cycle
   serverCacheInterval = setInterval(() => {
     refreshServerCache();
   }, cacheTTL * 1000);
+
+  return ee;
 };
 
 //

@@ -1,0 +1,11 @@
+{
+  "project":{
+    "name": "balance",
+    "functions": {
+      "heathcheck": "network",
+      "start": "start.sh",
+      "restart": "network",
+      "shutdown": "network"
+    }
+  }
+}
