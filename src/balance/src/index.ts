@@ -7,7 +7,7 @@
 import * as xxGuestApi from "./xxGuestApi";
 import { startProxy } from "./proxy";
 
-const xx = xxGuestApi.start((err, serverCache) => {
+const xx = xxGuestApi.start({}, (err, serverCache) => {
   if (err) throw err;
 
   if (serverCache.length === 1) {
