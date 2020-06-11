@@ -4,6 +4,8 @@
 // See the proxy.ts file for detailed explanation of how this module works and
 // for config settings used in the demo
 
+import "source-map-support/register";
+
 import * as xxGuestApi from "crisscross-guest-api";
 import { startProxy } from "./proxy";
 
