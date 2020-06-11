@@ -4,7 +4,7 @@
 // See the proxy.ts file for detailed explanation of how this module works and
 // for config settings used in the demo
 
-import * as xxGuestApi from "./xxGuestApi";
+import * as xxGuestApi from "crisscross-guest-api";
 import { startProxy } from "./proxy";
 
 const xx = xxGuestApi.start({}, (err, serverCache) => {

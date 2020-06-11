@@ -18,7 +18,7 @@ const errorBodyUnavailable = "Reverse API server proxy request failed";
 import http from "http";
 import url from "url";
 
-import * as xxGuestApi from "./xxGuestApi";
+import * as xxGuestApi from "crisscross-guest-api";
 
 export function startProxy() {
   const server = http.createServer((req, res) => {

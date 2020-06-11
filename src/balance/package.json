@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "crisscross-guest-api": "git+https://github.com/TaylorSwanson/crisscross-guest-api.git",
     "ws": "^7.3.0",
     "xxp": "github:TaylorSwanson/xxp"
   },
