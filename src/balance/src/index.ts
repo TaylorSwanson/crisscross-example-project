@@ -4,10 +4,10 @@
 // See the proxy.ts file for detailed explanation of how this module works and
 // for config settings used in the demo
 
-import * as xxApi from "./xxApi";
+import * as xxGuestApi from "./xxGuestApi";
 import { startProxy } from "./proxy";
 
-const xx = xxApi.start((err, serverCache) => {
+const xx = xxGuestApi.start((err, serverCache) => {
   if (err) throw err;
 
   if (serverCache.length === 1) {
@@ -23,7 +23,7 @@ xx.on("error", (err) => {
 
 // Emitted if servers have changed
 xx.on("serverchange", (servers) => {
-  console.log("There has been a change in servers; full list:", servers);
+  console.log("There has been a change in servers - full list:", servers);
 });
 
 // Emitted if server has been added

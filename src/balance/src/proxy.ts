@@ -18,11 +18,11 @@ const errorBodyUnavailable = "Reverse API server proxy request failed";
 import http from "http";
 import url from "url";
 
-import * as xxApi from "./xxApi";
+import * as xxGuestApi from "./xxGuestApi";
 
 export function startProxy() {
   const server = http.createServer((req, res) => {
-    const apiServers = xxApi.listServers("api");
+    const apiServers = xxGuestApi.listServers("api");
 
     if (!apiServers.length) {
       
@@ -109,7 +109,7 @@ export function startProxy() {
         // Report this server as unavailable, then wait for cache reload
         // We wait for cache reload so we don't run through all possible servers
         // before they are available
-        xxApi.reportServerIssue(apiServer.address, (err, serverCache) => {
+        xxGuestApi.reportServerIssue(apiServer.address, (err, serverCache) => {
           if (err) {
             crash();
             throw err;
